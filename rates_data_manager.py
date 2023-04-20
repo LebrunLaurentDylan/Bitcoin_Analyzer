@@ -1,7 +1,7 @@
 import json
 from coinapi_service import coin_api_get_exchange_filtered_rates_extended
 from os import path
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 
 
 def load_json_data_from_file(filename):
@@ -25,14 +25,11 @@ def convert_rates_to_date_value_format(rates_data):
     return rates_date_value_format
 
 
-def get_and_manage_rates_data(assets,start_date,end_date):
+def get_and_manage_rates_data(assets, start_date, end_date):
     data_filename = assets.replace("/", "_") + ".json"
     rates = []
     exclude_nb_days_start = 0
     exclude_nb_days_end = 0
-
-    saved_data_rates_start_str = None
-    saved_data_rates_end_str = None
 
     if path.exists(data_filename):
         # le fichier json existe
@@ -53,7 +50,9 @@ def get_and_manage_rates_data(assets,start_date,end_date):
 
         if nb_days_start > 0:
             print("on rajoute les données à gauche : ", start_date, (saved_data_rates_start - timedelta(1)))
-            rates_start = coin_api_get_exchange_filtered_rates_extended(assets, start_date, saved_data_rates_start - timedelta(1))
+            rates_start = coin_api_get_exchange_filtered_rates_extended(assets,
+                                                                        start_date,
+                                                                        saved_data_rates_start - timedelta(1))
             rates_start_date_value = convert_rates_to_date_value_format(rates_start)
             rates = rates_start_date_value + rates
         elif nb_days_start < 0:
@@ -62,7 +61,9 @@ def get_and_manage_rates_data(assets,start_date,end_date):
         nb_days_end = (end_date - saved_data_rates_end).days
         if nb_days_end > 0:
             print("on rajoute les données à droite : ", saved_data_rates_end + timedelta(1), end_date)
-            rates_end = coin_api_get_exchange_filtered_rates_extended(assets, saved_data_rates_end + timedelta(1), end_date)
+            rates_end = coin_api_get_exchange_filtered_rates_extended(assets,
+                                                                      saved_data_rates_end + timedelta(1),
+                                                                      end_date)
             rates_end_date_value = convert_rates_to_date_value_format(rates_end)
             rates += rates_end_date_value
         elif nb_days_end < 0:

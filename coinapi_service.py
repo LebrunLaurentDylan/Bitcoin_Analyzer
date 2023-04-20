@@ -1,4 +1,4 @@
-from datetime import date, datetime, timedelta
+from datetime import timedelta
 import requests
 import json
 from coinapi_config import API_KEY, BASE_URL
@@ -26,14 +26,6 @@ headers = {"X-CoinAPI-Key": API_KEY}
         print("quota d'appels restant: ", response.headers['x-ratelimit-remaining'])
     else:
         print("ERREUR: " + str(response.status_code))'''
-
-# period_id , 1DAY
-# url = 'https://rest.coinapi.io/v1/exchangerate/BTC/USD/history?period_id=1MIN&time_start=2016-01-01T00:00:00&time_end=2016-02-01T00:00:00'
-# date_start / date_end : date objects
-# max_days : int
-# start : 2023-03-27
-# end : 2023-04-07
-# [] -> decouper en interval de max 100 jours
 
 
 def get_dates_intervals(date_start, date_end, max_days):
@@ -107,17 +99,18 @@ def filter_inconsistent_rates_values(input_rates):
 
 # assets : str"BTS/EUR"
 # date_start / date_end : date objects (inclusive)
+
+
 def coin_api_get_exchange_rates(assets, date_start, date_end):
     date_start_str = date_start.strftime("%Y-%m-%d")
     date_end_str = (date_end + timedelta(1)).strftime("%Y-%m-%d")
     url = BASE_URL + 'v1/exchangerate/' + \
-          assets + '/history?period_id=1DAY&time_start=' +\
-          date_start_str + 'T00:00:00&time_end=' + date_end_str + "T00:00:00"
+        assets + '/history?period_id=1DAY&time_start=' +\
+        date_start_str + 'T00:00:00&time_end=' + date_end_str + "T00:00:00"
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         print("Appel validé !")
         data = json.loads(response.text)
-        nb_asset = len(data)
         print("quota d'appels restant: ", response.headers['x-ratelimit-remaining'])
         return data
     else:
