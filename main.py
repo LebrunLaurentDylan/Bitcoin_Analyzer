@@ -12,7 +12,7 @@ assets = "BTC/EUR"
 rates = get_and_manage_rates_data(assets, start_date, end_date)
 print("nb rates:", len(rates))
 
-ma_intervals = [1, 2, 3, 4, 5, 8, 10, 15, 20, 50, 60, 70, 80, 90, 100, 150]
+ma_intervals = [2, 50]
 ma_list = []
 
 for intervals in ma_intervals:
